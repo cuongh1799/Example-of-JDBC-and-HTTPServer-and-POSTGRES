@@ -1,6 +1,7 @@
 package org.example;
 
 import com.sun.net.httpserver.HttpServer;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,11 +10,16 @@ import java.sql.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         Connection connection;
+        Dotenv dotenv = Dotenv.configure()
+                .directory("src/main/resources/.env")
+                .ignoreIfMalformed()
+                .ignoreIfMissing()
+                .load();
         try{
             connection = DriverManager.getConnection(
-                    YOUR CONNECTION POOL,
-                    YOUR_USER,
-                    YOUR_PASSWORD
+                    dotenv.get("CONNECTION_STRING"),
+                    dotenv.get("CONNECTION_USER"),
+                    dotenv.get("CONNECTION_PASSWORD")
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);
